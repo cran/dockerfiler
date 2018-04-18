@@ -1,50 +1,46 @@
 #' A Dockerfile template
 #'
-#' This R6 object contains a series of methods designed to create a Dockerfile.
+#' @return A dockerfile template
 #'
 #' @section Methods:
 #' \describe{
-#'   \item{\code{RUN}}{add a RUN command to your Dockerfile}
-#'   \item{\code{ADD}}{add an ADD command to your Dockerfile}
-#'   \item{\code{COPY}}{add a COPY command to your Dockerfile}
-#'   \item{\code{WORKDIR}}{add a WORKDIR command to your Dockerfile}
-#'   \item{\code{EXPOSE}}{add an EXPOSE command to your Dockerfile}
-#'   \item{\code{VOLUME}}{add a VOLUME command to your Dockerfile}
-#'   \item{\code{CMD}}{add a CMD command to your Dockerfile}
-#'   \item{\code{ENV}}{add an ENV command to your Dockerfile}
-#'   \item{\code{ENTRYPOINT}}{add an ENTRYPOINT command to your Dockerfile}
-#'   \item{\code{USER}}{add a USER command to your Dockerfile}
-#'   \item{\code{ARG}}{add an ARG command to your Dockerfile}
-#'   \item{\code{ONBUILD}}{add an ONBUILD command to your Dockerfile}
-#'   \item{\code{STOPSIGNAL}}{add a STOPSIGNAL command to your Dockerfile}
-#'   \item{\code{HEALTHCHECK}}{add an HEALTHCHECK command to your Dockerfile}
-#'   \item{\code{SHELL}}{add a SHELL command to your Dockerfile}
-#'   \item{\code{MAINTAINER}}{add a MAINTAINER command to your Dockerfile}
-#'   \item{\code{print}}{print your Dockerfile}
-#'   \item{\code{write}}{write your Dockerfile}
-#'   \item{\code{switch_cmd}}{switch two commands in your Dockerfile}
-#'   \item{\code{remove_cmd}}{remove a command in your Dockerfile}
+#'   \item{\code{RUN}}{add a RUN command}
+#'   \item{\code{ADD}}{add a ADD command}
+#'   \item{\code{COPY}}{add a COPY command}
+#'   \item{\code{WORKDIR}}{add a WORKDIR command}
+#'   \item{\code{EXPOSE}}{add an EXPOSE command}
+#'   \item{\code{VOLUME}}{add a VOLUME command}
+#'   \item{\code{CMD}}{add a CMD command}
+#'   \item{\code{LABEL}}{add a LABEL command}
+#'   \item{\code{ENV}}{add a ENV command}
+#'   \item{\code{ENTRYPOINT}}{add a ENTRYPOINT command}
+#'   \item{\code{VOLUME}}{add a VOLUME command}
+#'   \item{\code{USER}}{add a USER command}
+#'   \item{\code{ARG}}{add an ARG command}
+#'   \item{\code{ONBUILD}}{add a ONBUILD command}
+#'   \item{\code{STOPSIGNAL}}{add a STOPSIGNAL command}
+#'   \item{\code{HEALTHCHECK}}{add a HEALTHCHECK command}
+#'   \item{\code{STOPSIGNAL}}{add a STOPSIGNAL command}
+#'   \item{\code{SHELL}}{add a SHELL command}
+#'   \item{\code{MAINTAINER}}{add a MAINTAINER command}
+#'   \item{\code{custom}}{add a custom command}
+#'   \item{\code{write}}{save the Dockerfile}
+#'   \item{\code{switch_cmd}}{switch two command}
+#'   \item{\code{remove_cmd}}{remove_cmd one or more command(s)}
 #' }
-#'
-#' @return A dockerfile template
 #'
 #' @importFrom R6 R6Class
 #' @export
 #'
 #' @examples
 #' my_dock <- Dockerfile$new()
-#' my_dock$RUN(r(install.packages("attempt", repo = "http://cran.irsn.fr/")))
-#' my_dock$RUN("mkdir /usr/scripts")
-#' my_dock$COPY("plumberfile.R", "/usr/scripts/plumber.R")
-#' my_dock$EXPOSE(8000)
-#' my_dock$CMD("Rscript /usr/scripts/torun.R ")
 
 Dockerfile <- R6::R6Class("Dockerfile",
                       public = list(
                         Dockerfile = character(),
                         ## Either from a file, or from a character vector
                         initialize = function(FROM = "rocker/r-base", AS = NULL){
-                          self$Dockerfile <- create_dockerfile("rocker/r-base", AS)
+                          self$Dockerfile <- create_dockerfile(FROM, AS)
                         },
                         RUN = function(cmd){
                           self$Dockerfile <- c(self$Dockerfile, add_run(cmd))
@@ -100,6 +96,9 @@ Dockerfile <- R6::R6Class("Dockerfile",
                         },
                         MAINTAINER = function(name, email){
                           self$Dockerfile <- c(self$Dockerfile,add_maintainer(name, email))
+                        },
+                        custom = function(base, cmd){
+                          self$Dockerfile <- c(self$Dockerfile, add_custom(base, cmd))
                         },
                         print = function(){
                           cat(self$Dockerfile, sep = '\n')
