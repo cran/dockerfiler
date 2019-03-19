@@ -5,8 +5,11 @@ knitr::opts_chunk$set(
 )
 
 ## ----gh-installation, eval = FALSE---------------------------------------
-#  # install.packages("devtools")
-#  devtools::install_github("colinfay/dockerfiler")
+#  # install.packages("remotes")
+#  remotes::install_github("colinfay/dockerfiler")
+
+## ---- eval = FALSE-------------------------------------------------------
+#  install.packages("dockerfiler")
 
 ## ------------------------------------------------------------------------
 library(dockerfiler)
@@ -41,6 +44,22 @@ my_dock
 my_dock$remove_cmd(5:7)
 my_dock
 
+## ------------------------------------------------------------------------
+my_dock$add_after(
+  cmd = "RUN R -e 'remotes::install_cran(\"rlang\")'", 
+  after = 3
+)
+
 ## ----eval = FALSE--------------------------------------------------------
 #  my_dock$write()
+
+## ---- eval = FALSE-------------------------------------------------------
+#  my_dock <- dock_from_desc("DESCRIPTION")
+#  
+#  my_dock$CMD(r(library(dockerfiler)))
+#  
+#  my_dock$add_after(
+#    cmd = "RUN R -e 'remotes::install_cran(\"rlang\")'",
+#    after = 3
+#  )
 
