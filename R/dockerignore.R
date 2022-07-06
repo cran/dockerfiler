@@ -14,18 +14,18 @@
 #'   docker_ignore_add()
 #' }
 docker_ignore_add <- function(path) {
-  path <- fs::path(
+  path_di <- fs::path(
     path,
     ".dockerignore"
   )
 
   if (!fs::file_exists(
-    path
+    path_di
   )) {
-    fs::file_create(path)
+    fs::file_create(path_di)
 
     write_ignore <- function(content) {
-      write(content, path, append = TRUE)
+      write(content, path_di, append = TRUE)
     }
 
     for (i in c(
@@ -35,9 +35,28 @@ docker_ignore_add <- function(path) {
       ".gitignore",
       "manifest.json",
       "rsconnect/",
-      "Rproj.user"
+      ".Rproj.user"
     )) {
       write_ignore(i)
+    }
+
+    path_ri <- fs::path(
+      path,
+      ".Rbuildignore"
+    )
+    if (fs::file_exists(
+      path_ri
+    )) {
+      write(
+        "^\\.dockerignore$",
+        path_ri,
+        append = TRUE
+      )
+      cat_bullet(
+        ".dockerignore added to the .Rbuildignore file.",
+        bullet = "info",
+        bullet_col = "green"
+      )
     }
   } else {
     cat_bullet(
@@ -47,5 +66,5 @@ docker_ignore_add <- function(path) {
     )
   }
 
-  return(invisible(path))
+  return(invisible(path_di))
 }

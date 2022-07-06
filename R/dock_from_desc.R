@@ -73,6 +73,7 @@ dock_from_desc <- function(
   extra_sysreqs = NULL
 ) {
   path <- fs::path_abs(path)
+
   packages <- desc_get_deps(path)$package
   packages <- packages[packages != "R"] # remove R
   packages <- packages[!packages %in% base_pkg_] # remove base and recommended
@@ -111,12 +112,12 @@ dock_from_desc <- function(
   } else if (!is.na(sr)) {
     message(
       paste(
-        "the DESCRIPTION file contains the SystemRequirements bellow: ",
+        "The DESCRIPTION file contains the following SystemRequirements: ",
         sr
       )
     )
     message(
-      "please check the Dockerfile created and if needed pass extra sysreqs using the extra_sysreqs param"
+      "Please check the created Dockerfile. \n You might needed to add extra sysreqs."
     )
   }
 
@@ -168,31 +169,26 @@ dock_from_desc <- function(
     }
   }
 
+  repos_as_character <- repos_as_character(repos)
 
-  repos_as_character <- paste(
-    utils::capture.output(
-      dput(repos)
-    ),
-    collapse = ""
-  )
+  dock$RUN("mkdir -p /usr/local/lib/R/etc/ /usr/lib/R/etc/")
 
-  repos_as_character <- gsub(
-    pattern = '\"',
-    replacement = "'",
-    x = repos_as_character
-  )
+
 
 
   dock$RUN(
     sprintf(
-      "echo \"options(repos = %s, download.file.method = 'libcurl', Ncpus = 4)\" >> /usr/local/lib/R/etc/Rprofile.site",
+      "echo \"options(repos = %s, download.file.method = 'libcurl', Ncpus = 4)\" | tee /usr/local/lib/R/etc/Rprofile.site | tee /usr/lib/R/etc/Rprofile.site",
       repos_as_character
     )
   )
 
+
+
+
   dock$RUN("R -e 'install.packages(\"remotes\")'")
 
-  if ( length(packages_on_cran > 0) ) {
+  if (length(packages_on_cran > 0)) {
     ping <- mapply(
       function(dock, ver, nm) {
         res <- dock$RUN(
@@ -210,7 +206,7 @@ dock_from_desc <- function(
   }
 
   if (length(packages_not_on_cran > 0)) {
-    nn <-as.data.frame(
+    nn <- as.data.frame(
       do.call(
         rbind,
         lapply(
@@ -316,4 +312,22 @@ dock_from_desc <- function(
   )
 
   dock
+}
+
+#' @noRd
+repos_as_character <- function(repos) {
+  repos_as_character <- paste(
+    utils::capture.output(
+      dput(repos)
+    ),
+    collapse = ""
+  )
+
+  repos_as_character <- gsub(
+    pattern = '\"',
+    replacement = "'",
+    x = repos_as_character
+  )
+
+  repos_as_character
 }
