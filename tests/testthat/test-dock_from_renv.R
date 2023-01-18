@@ -3,6 +3,7 @@ dir.create(dir_build)
 
 # Create a lockfile
 the_lockfile <- file.path(dir_build, "renv.lock")
+
 custom_packages <- c(
   # attachment::att_from_description(),
   "renv",
@@ -35,12 +36,32 @@ test_that("dock_from_renv works", {
     distro = "focal",
     FROM = "rocker/verse",
   )
-  expect_s3_class(out, "Dockerfile")
-  expect_s3_class(out, "R6")
+  expect_s3_class(
+    out,
+    "Dockerfile"
+  )
+  expect_s3_class(
+    out,
+    "R6"
+  )
   # read Dockerfile
-  out$write(file.path(dir_build, "Dockerfile"))
-  dock_created <- readLines(file.path(dir_build, "Dockerfile"))
-  expect_equal(dock_created[1], "FROM rocker/verse:4.1.2")
+  out$write(
+    file.path(
+      dir_build,
+      "Dockerfile"
+    )
+  )
+
+  dock_created <- readLines(
+    file.path(
+      dir_build,
+      "Dockerfile"
+    )
+  )
+  expect_equal(
+    dock_created[1],
+    "FROM rocker/verse:4.1.2"
+  )
 
   expect_length(
     grep("install.packages\\(c\\(\"renv\",\"remotes\"", dock_created),
@@ -53,8 +74,29 @@ test_that("dock_from_renv works", {
 
   # System dependencies are different when build in interactive environment?
   skip_if_not(interactive())
-  file.copy(file.path(dir_build, "Dockerfile"), "inst/renv_Dockefile", overwrite = TRUE)
-  dock_expected <- readLines(system.file("renv_Dockefile", package = "dockerfiler"))
+  dir.create(
+    file.path(
+      dir_build,
+      "inst"
+    )
+  )
+  file.copy(
+    file.path(
+      dir_build,
+      "Dockerfile"
+    ),
+    file.path(
+      dir_build,
+      "inst"
+    ),
+    overwrite = TRUE
+  )
+  dock_expected <- readLines(
+    system.file(
+      "renv_Dockefile",
+      package = "dockerfiler"
+    )
+  )
 
   expect_equal(dock_created, dock_expected)
 })
