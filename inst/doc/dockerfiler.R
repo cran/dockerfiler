@@ -8,7 +8,7 @@ knitr::opts_chunk$set(
 #  # install.packages("remotes")
 #  remotes::install_github("colinfay/dockerfiler")
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  install.packages("dockerfiler")
 
 ## -----------------------------------------------------------------------------
@@ -53,7 +53,7 @@ my_dock$add_after(
 ## ----eval = FALSE-------------------------------------------------------------
 #  my_dock$write()
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  my_dock <- dock_from_desc("DESCRIPTION")
 #  
 #  my_dock$CMD(r(library(dockerfiler)))

@@ -36,13 +36,14 @@ writeLines(renv_file, file.path(dir_build, "renv.lock"))
 
 # dock_from_renv ----
 test_that("dock_from_renv works", {
+  
+  
   # testthat::skip_on_cran()
   # skip_if_not(interactive())
   # Create Dockerfile
-
+  skip_if(is_rdevel, "skip on R-devel")
   out <- dock_from_renv(
     lockfile = the_lockfile,
-    distro = "focal",
     FROM = "rocker/verse",
   )
   expect_s3_class(
@@ -53,6 +54,8 @@ test_that("dock_from_renv works", {
     out,
     "R6"
   )
+
+
   # read Dockerfile
   out$write(
     file.path(
@@ -77,6 +80,10 @@ test_that("dock_from_renv works", {
     1
   )
 
+  skip_if(is_rdevel, "Skip R-devel")
+  #python3 is not a direct dependencies from custom_packages
+  expect_false(  any(grepl("python3",out$Dockerfile)))
+  
   # System dependencies are different when build in interactive environment?
   # yes.  strange.
   skip_if_not(interactive())
@@ -107,6 +114,35 @@ test_that("dock_from_renv works", {
   expect_equal(dock_created, dock_expected)
 })
 # rstudioapi::navigateToFile(file.path(dir_build, "Dockerfile"))
+
+test_that("dock_from_renv works with full dependencies", {
+  # testthat::skip_on_cran()
+  # skip_if_not(interactive())
+  # Create Dockerfile
+skip_if(is_rdevel, "skip on R-devel")
+  out <- dock_from_renv(
+    dependencies = TRUE,
+    lockfile = the_lockfile,
+    FROM = "rocker/verse",
+  )
+  expect_s3_class(
+    out,
+    "Dockerfile"
+  )
+  expect_s3_class(
+    out,
+    "R6"
+  )
+  skip_if(is_rdevel, "Skip R-devel")
+  #python3 is  a un-direct dependencies from custom_packages
+  expect_true(  any(grepl("python3",out$Dockerfile)))
+})
+# rstudioapi::navigateToFile(file.path(dir_build, "Dockerfile"))
+
+
+
+
+
 unlink(dir_build)
 
 # repos_as_character ----
@@ -126,14 +162,12 @@ test_that("repos_as_character works", {
 # gen_base_image ----
 test_that("gen_base_image works", {
   out <- dockerfiler:::gen_base_image(
-    distro = "focal",
     r_version = "4.0",
     FROM = "rstudio/r-base"
   )
-  expect_equal(out, "rstudio/r-base:4.0-focal")
+  expect_equal(out, "rstudio/r-base:4.0")
 
   out <- dockerfiler:::gen_base_image(
-    distro = "focal",
     r_version = "4.0",
     FROM = "rocker/verse"
   )
@@ -145,6 +179,8 @@ test_that("gen_base_image works", {
 
 
 test_that("dock_from_renv works with specific renv", {
+  
+  skip_if(is_rdevel, "skip on R-devel")
   # testthat::skip_on_cran()
 the_lockfile1.0.0 <- system.file("renv_with_1.0.0.lock",package = "dockerfiler")
 
@@ -154,12 +190,10 @@ for (renv_version in list(NULL,"banana","missing")){
 
   if (!is.null(renv_version) && renv_version == "missing") {
     out <- dock_from_renv(lockfile = lf,
-                          distro = "focal",
                           FROM = "rocker/verse")
   } else{
     out <- dock_from_renv(
       lockfile = lf,
-      distro = "focal",
       FROM = "rocker/verse",
       renv_version = renv_version
     )
