@@ -1,6 +1,6 @@
 Package: dockerfiler
 Title: Easy Dockerfile Creation from R
-Version: 0.2.3
+Version: 0.2.4
 Authors@R: c(
     person("Colin", "Fay", , "contact@colinfay.me", role = c("cre", "aut"),
            comment = c(ORCID = "0000-0001-7343-1846")),
@@ -27,13 +27,13 @@ VignetteBuilder: knitr
 Config/fusen/version: 0.6.0
 Config/testthat/edition: 3
 Encoding: UTF-8
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 NeedsCompilation: no
-Packaged: 2024-07-08 16:26:05 UTC; vincent
+Packaged: 2024-08-23 09:46:43 UTC; colinfay
 Author: Colin Fay [cre, aut] (<https://orcid.org/0000-0001-7343-1846>),
   Vincent Guyader [aut] (<https://orcid.org/0000-0003-0671-9270>),
   Josiah Parry [aut] (<https://orcid.org/0000-0001-9910-865X>),
   Sébastien Rochette [aut] (<https://orcid.org/0000-0002-1565-9313>)
 Maintainer: Colin Fay <contact@colinfay.me>
 Repository: CRAN
-Date/Publication: 2024-07-09 08:00:02 UTC
+Date/Publication: 2024-08-23 10:00:09 UTC
