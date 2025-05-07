@@ -31,19 +31,22 @@ add_add <- function(
   glue("ADD {from} {to}")
 }
 
-add_copy <- function(
-  from,
-  to,
-  force = TRUE
-) {
+add_copy <- function(from,
+                     to,
+                     stage = NULL,
+                     force = TRUE) {
   if (!force) {
-    warn_if_not(
-      normalizePath(from),
-      file.exists,
-      "The file `from` doesn't seem to exists"
-    )
+    warn_if_not(normalizePath(from),
+                file.exists,
+                "The file `from` doesn't seem to exists")
   }
-  glue("COPY {from} {to}")
+
+  if (is.null(stage)) {
+    glue("COPY {from} {to}")
+  } else {
+    glue("COPY --from={stage} {from} {to}")
+
+  }
 }
 
 add_workdir <- function(where) {
@@ -109,6 +112,11 @@ add_maintainer <- function(name, email) {
 
 add_custom <- function(base, cmd) {
   glue("{base} {cmd}")
+}
+
+
+add_comment <- function(comment) {
+  paste0("# ", strsplit(comment, "\n")[[1]], collapse = "\n")
 }
 
 switch_them <- function(vec, a, b) {

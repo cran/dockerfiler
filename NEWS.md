@@ -1,3 +1,11 @@
+# dockerfiler 0.2.5
+
+- feat: allow multistage dockerfile creation
+- feat: COPY function can now specify a stage to copy from. 
+- feat: add dedicated cache for `renv::restore`
+- feat: add COMMENT function to add comment in Dockerfile thanks to @jcrodriguez1989
+
+
 # dockerfiler 0.2.4
 
 - remove native pipe thanks to @HenningLorenzen-ext-bayer, this enable to use of older R versions

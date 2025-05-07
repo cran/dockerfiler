@@ -40,6 +40,7 @@ my_dock <- Dockerfile$new()
 \item \href{#method-Dockerfile-SHELL}{\code{Dockerfile$SHELL()}}
 \item \href{#method-Dockerfile-MAINTAINER}{\code{Dockerfile$MAINTAINER()}}
 \item \href{#method-Dockerfile-custom}{\code{Dockerfile$custom()}}
+\item \href{#method-Dockerfile-COMMENT}{\code{Dockerfile$COMMENT()}}
 \item \href{#method-Dockerfile-print}{\code{Dockerfile$print()}}
 \item \href{#method-Dockerfile-write}{\code{Dockerfile$write()}}
 \item \href{#method-Dockerfile-switch_cmd}{\code{Dockerfile$switch_cmd()}}
@@ -120,7 +121,7 @@ the Dockerfile object, invisibly.
 \subsection{Method \code{COPY()}}{
 Add a COPY command.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Dockerfile$COPY(from, to, force = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Dockerfile$COPY(from, to, stage = NULL, force = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -129,6 +130,8 @@ Add a COPY command.
 \item{\code{from}}{The source file.}
 
 \item{\code{to}}{The destination file.}
+
+\item{\code{stage}}{Optional. Name of the build stage (e.g., \code{"builder"}) to copy files from. This corresponds to the \verb{--from=} part in a Dockerfile COPY instruction (e.g., \code{COPY --from=builder /source /dest}). If \code{NULL}, the \verb{--from=} argument is omitted.}
 
 \item{\code{force}}{If TRUE, overwrite the destination file.}
 }
@@ -441,6 +444,26 @@ the Dockerfile object, invisibly.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Dockerfile-COMMENT"></a>}}
+\if{latex}{\out{\hypertarget{method-Dockerfile-COMMENT}{}}}
+\subsection{Method \code{COMMENT()}}{
+Add a comment.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Dockerfile$COMMENT(comment)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{comment}}{The comment to add.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+the Dockerfile object, invisibly.
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Dockerfile-print"></a>}}
 \if{latex}{\out{\hypertarget{method-Dockerfile-print}{}}}
 \subsection{Method \code{print()}}{
@@ -459,13 +482,15 @@ used for side effect
 \subsection{Method \code{write()}}{
 Write the Dockerfile to a file.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Dockerfile$write(as = "Dockerfile")}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Dockerfile$write(as = "Dockerfile", append = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{as}}{The file to write to.}
+
+\item{\code{append}}{boolean, if TRUE append to file.}
 }
 \if{html}{\out{</div>}}
 }
